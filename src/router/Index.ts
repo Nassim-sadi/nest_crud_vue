@@ -25,6 +25,18 @@ const router = createRouter({
       name: 'register',
       component: () => import('@/views/auth/Register.vue'),
     },
+
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/views/NotFound.vue'),
+    },
+    {
+      //profile
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/views/Profile.vue'),
+    },
   ],
 })
 

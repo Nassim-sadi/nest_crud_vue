@@ -1,1 +1,84 @@
 @import 'tailwindcss';
+
+/* ===== CSS RESET ===== */
+
+/* 1. Set box-sizing border-box on all elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margins & paddings */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* 3. Inherit font styles */
+html {
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%; /* Prevent font size changes on iOS */
+  font-family: system-ui, sans-serif;
+}
+
+/* 4. Body baseline */
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  background: #fff;
+  color: #111;
+}
+
+/* 5. Remove list styles */
+ol,
+ul {
+  list-style: none;
+}
+
+/* 6. Remove default link styles */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 7. Make images & media responsive */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 8. Remove built-in form styles */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  background: none;
+  border: none;
+  outline: none;
+  color: inherit;
+}
+
+/* 9. Remove button default styles */
+button {
+  cursor: pointer;
+  background: transparent;
+}
+
+/* 10. Tables */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* 11. PrimeVue compatibility: restore focus outlines */
+:focus {
+  outline: 2px solid var(--p-focus-ring-color, #3b82f6);
+  outline-offset: 2px;
+}

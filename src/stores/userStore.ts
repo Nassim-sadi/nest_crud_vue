@@ -49,21 +49,21 @@ export const useAuthStore = defineStore('user', {
     },
 
     startAutoRefresh() {
-      // Refresh every 5 minutes
-      setInterval(
-        async () => {
-          if (this.isAuthenticated && this.token) {
-            try {
-              await this.refreshToken()
-              console.log('Token refreshed automatically')
-            } catch (err) {
-              console.log('Auto refresh failed, logging out')
-              this.clearAuth()
-            }
+      const refresh = async () => {
+        if (this.isAuthenticated && this.token) {
+          try {
+            await this.refreshToken()
+          } catch (err) {
+            this.clearAuth()
           }
-        },
-        5 * 60 * 1000,
-      ) // 5 minutes
+        }
+      }
+
+      // Run immediately once
+      refresh()
+
+      // Then schedule every 5 minutes
+      setInterval(refresh, 5 * 60 * 1000)
     },
 
     async login(credentials: LoginPayload) {
@@ -71,12 +71,14 @@ export const useAuthStore = defineStore('user', {
       this.error = null
       try {
         const res = await api.post('/auth/login', credentials)
+
         const { accessToken, user } = res.data
         this.token = accessToken
         this.user = user
         this.isAuthenticated = true
         localStorage.setItem('token', accessToken)
         localStorage.setItem('user', JSON.stringify(user))
+        router.push({ name: 'home' })
         return { success: true, user, token: accessToken }
       } catch (err: any) {
         this.error = err.response?.data?.message || 'Login failed'

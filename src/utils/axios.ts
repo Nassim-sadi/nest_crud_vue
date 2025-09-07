@@ -30,22 +30,28 @@ export const setupAxiosInterceptors = (store: AuthStore) => {
     async (error: AxiosError) => {
       const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
 
+      // Skip if request is to refresh-token endpoint
+      if (originalRequest?.url?.includes('/auth/refresh-token')) {
+        return Promise.reject(error)
+      }
+
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true
         try {
-          // Use separate call to refresh token (pass current token)
-          const res = await api.post(
-            '/auth/refresh-token',
+          // Call refresh endpoint directly without triggering interceptor again
+          const res = await axios.post(
+            `${api.defaults.baseURL}/auth/refresh-token`,
             {},
             { headers: { Authorization: `Bearer ${store.token}` } },
           )
+
           const { accessToken } = res.data
           store.updateToken(accessToken)
 
-          // Retry original request with new token
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${accessToken}`
           }
+
           return api(originalRequest)
         } catch (refreshError) {
           store.clearAuth()
@@ -53,6 +59,7 @@ export const setupAxiosInterceptors = (store: AuthStore) => {
           return Promise.reject(refreshError)
         }
       }
+
       return Promise.reject(error)
     },
   )
